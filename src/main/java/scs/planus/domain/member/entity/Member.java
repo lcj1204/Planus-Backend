@@ -90,4 +90,11 @@ public class Member extends BaseTimeEntity {
         this.profileImageUrl = null;
         this.status = Status.ACTIVE;
     }
+
+    public void init() {
+        this.description = null;
+        this.profileImageUrl = null;
+        this.status = Status.ACTIVE;
+    }
+
 }
