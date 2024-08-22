@@ -89,7 +89,7 @@ public class OAuthService {
         return memberRepository.findByEmail(appleUserInfo.getEmail())
                 .map(findMember -> {
                     validateDuplicatedEmail(findMember, appleUserInfo);
-                    return getExistedAppleMember(findMember);
+                    return getExistedAppleMember(findMember, fullName);
                 })
                 .orElseGet(() -> {
                     String nickname = getNicknameFromFullName(fullName);
@@ -112,9 +112,10 @@ public class OAuthService {
         return findMember;
     }
 
-    private Member getExistedAppleMember(Member findMember) {
+    private Member getExistedAppleMember(Member findMember, FullName fullName) {
         if (findMember.getStatus().equals(Status.INACTIVE)) {
-            findMember.init();
+            String nickname = getNicknameFromFullName(fullName);
+            findMember.init(nickname);
         }
         return findMember;
     }
