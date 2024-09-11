@@ -174,6 +174,21 @@ public class GroupService {
     }
 
     @Transactional
+    public GroupResponseDto updateGroupScope(Long memberId, Long groupId) {
+        Group group = groupRepository.findByIdAndStatus( groupId )
+                .orElseThrow( () -> new PlanusException(NOT_EXIST_GROUP));
+
+        Member member = memberRepository.findById( memberId )
+                .orElseThrow(() -> new PlanusException(NONE_USER));
+
+        validateLeaderPermission( member, group );
+
+        group.changeScope();
+
+        return GroupResponseDto.of( group );
+    }
+
+    @Transactional
     public GroupResponseDto softDeleteGroup( Long memberId, Long groupId ) {
         Group group = groupRepository.findByIdAndStatus( groupId )
                 .orElseThrow( () -> new PlanusException(NOT_EXIST_GROUP));

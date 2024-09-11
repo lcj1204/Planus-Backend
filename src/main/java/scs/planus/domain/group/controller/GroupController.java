@@ -101,6 +101,17 @@ public class GroupController {
         return new BaseResponse<>( responseDto );
     }
 
+    @PatchMapping("/groups/{groupId}/scope")
+    @Operation(summary = "(리더용) 그룹 공개 범위 수정 API")
+    public BaseResponse<GroupResponseDto> updateGroupScope(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                           @PathVariable("groupId") Long groupId) {
+
+        Long memberId = principalDetails.getId();
+        GroupResponseDto responseDto = groupService.updateGroupScope(memberId, groupId);
+
+        return new BaseResponse<>( responseDto );
+    }
+
     @DeleteMapping("/groups/{groupId}")
     @Operation(summary = "(리더용) 그룹 삭제 API")
     public BaseResponse<GroupResponseDto> softDeleteGroup(@AuthenticationPrincipal PrincipalDetails principalDetails,
