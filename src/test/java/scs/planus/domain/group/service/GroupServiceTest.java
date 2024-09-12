@@ -12,16 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import scs.planus.domain.Status;
 import scs.planus.domain.category.repository.TodoCategoryRepository;
-import scs.planus.domain.group.dto.GroupCreateRequestDto;
-import scs.planus.domain.group.dto.GroupDetailUpdateRequestDto;
-import scs.planus.domain.group.dto.GroupGetDetailResponseDto;
-import scs.planus.domain.group.dto.GroupGetMemberResponseDto;
-import scs.planus.domain.group.dto.GroupMemberResponseDto;
-import scs.planus.domain.group.dto.GroupNoticeUpdateRequestDto;
-import scs.planus.domain.group.dto.GroupResponseDto;
-import scs.planus.domain.group.dto.GroupsGetResponseDto;
+import scs.planus.domain.group.dto.*;
 import scs.planus.domain.group.entity.Group;
 import scs.planus.domain.group.entity.GroupMember;
+import scs.planus.domain.group.entity.GroupScope;
 import scs.planus.domain.group.entity.GroupTag;
 import scs.planus.domain.group.repository.GroupMemberQueryRepository;
 import scs.planus.domain.group.repository.GroupMemberRepository;
@@ -313,6 +307,18 @@ class GroupServiceTest extends ServiceTest {
                 .isInstanceOf(PlanusException.class)
                 .extracting("status")
                 .isEqualTo(NOT_GROUP_LEADER_PERMISSION);
+    }
+
+    @DisplayName("leaderId와 groupId로 GroupScope을 변경할 수 있다. 최초 그룹 공개 범위는 PUBLIC 이다.")
+    @Test
+    void updateGroupScope() {
+        // PUBLIC 일 때
+        groupService.changeGroupScope(leader.getId(), group.getId());
+        assertThat(group.getScope()).isEqualTo(GroupScope.PRIVATE);
+
+        // PRIVATE 일 떄
+        groupService.changeGroupScope(leader.getId(), group.getId());
+        assertThat(group.getScope()).isEqualTo(GroupScope.PUBLIC);
     }
 
     @DisplayName("Group을 삭제할 때, status가 Inactive로 변경되어야 한다.")
