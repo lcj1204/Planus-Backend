@@ -103,11 +103,11 @@ public class GroupController {
 
     @PatchMapping("/groups/{groupId}/scope")
     @Operation(summary = "(리더용) 그룹 공개 범위 수정 API")
-    public BaseResponse<GroupResponseDto> updateGroupScope(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public BaseResponse<GroupResponseDto> changeGroupScope(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @PathVariable("groupId") Long groupId) {
 
         Long memberId = principalDetails.getId();
-        GroupResponseDto responseDto = groupService.updateGroupScope(memberId, groupId);
+        GroupResponseDto responseDto = groupService.changeGroupScope(memberId, groupId);
 
         return new BaseResponse<>( responseDto );
     }

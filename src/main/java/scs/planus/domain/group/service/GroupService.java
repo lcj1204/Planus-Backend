@@ -174,14 +174,14 @@ public class GroupService {
     }
 
     @Transactional
-    public GroupResponseDto updateGroupScope(Long memberId, Long groupId) {
+    public GroupResponseDto changeGroupScope(Long leaderId, Long groupId) {
         Group group = groupRepository.findByIdAndStatus( groupId )
                 .orElseThrow( () -> new PlanusException(NOT_EXIST_GROUP));
 
-        Member member = memberRepository.findById( memberId )
+        Member leader = memberRepository.findById( leaderId )
                 .orElseThrow(() -> new PlanusException(NONE_USER));
 
-        validateLeaderPermission( member, group );
+        validateLeaderPermission( leader, group );
 
         group.changeScope();
 
