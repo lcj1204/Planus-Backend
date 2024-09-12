@@ -423,10 +423,7 @@ class GroupServiceTest extends ServiceTest {
             groupRepository.deleteAll();
 
             for (int i = 0; i < COUNT; i++) {
-                Group group = Group.builder()
-                        .name("group" + i)
-                        .status(Status.ACTIVE)
-                        .build();
+                Group group = Group.creatGroup("group" + i, "", 1, "");
                 GroupMember groupLeader = GroupMember.createGroupLeader(leader, group);
                 groupMemberRepository.save(groupLeader);
                 groupRepository.save(group);
