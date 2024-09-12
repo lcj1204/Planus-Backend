@@ -159,4 +159,25 @@ class GroupTest {
         // when & then
         assertThat(group.getActiveGroupMembersSize()).isEqualTo(1);
     }
+
+    @DisplayName("Group의 상태가 변경되어야 한다.")
+    @Test
+    void changeScope() {
+        //given
+        Group group1 = Group.builder()
+                .scope(GroupScope.PUBLIC)
+                .build();
+
+        Group group2 = Group.builder()
+                .scope(GroupScope.PRIVATE)
+                .build();
+
+        //when
+        group1.changeScope();
+        group2.changeScope();
+
+        //then
+        assertThat(group1.getScope()).isEqualTo(GroupScope.PRIVATE);
+        assertThat(group2.getScope()).isEqualTo(GroupScope.PUBLIC);
+    }
 }
