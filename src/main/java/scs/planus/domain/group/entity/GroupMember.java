@@ -74,4 +74,7 @@ public class GroupMember extends BaseTimeEntity {
     public void changeStatusToActive() {
         this.status = Status.ACTIVE;
     }
+    public void changeTodoAuthority() {
+        this.todoAuthority = !todoAuthority;
+    }
 }
