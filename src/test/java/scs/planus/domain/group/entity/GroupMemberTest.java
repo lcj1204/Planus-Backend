@@ -1,6 +1,7 @@
 package scs.planus.domain.group.entity;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import scs.planus.domain.Status;
 import scs.planus.domain.member.entity.Member;
@@ -98,5 +99,34 @@ class GroupMemberTest {
 
         //then
         assertThat(groupMember.getStatus()).isEqualTo(Status.ACTIVE);
+    }
+
+    @DisplayName("일정 권한 변경 테스트")
+    @Nested
+    class changeTodoAuthority_Leader_Permission{
+        @DisplayName("일정 권한이 false 에서 true로 변경되어야 한다.")
+        @Test
+        void changeTodoAuthority_Success_FalseToTrue() {
+            //given
+            GroupMember groupMember = GroupMember.builder().todoAuthority(false).build();
+
+            //when
+            groupMember.changeTodoAuthority();
+
+            //then
+            assertThat(groupMember.isTodoAuthority()).isTrue();
+        }
+        @DisplayName("일정 권한이 true 에서 false 로 변경되어야 한다.")
+        @Test
+        void changeTodoAuthority_Success_TrueToFalse() {
+            //given
+            GroupMember groupMember = GroupMember.builder().todoAuthority(true).build();
+
+            //when
+            groupMember.changeTodoAuthority();
+
+            //then
+            assertThat(groupMember.isTodoAuthority()).isFalse();
+        }
     }
 }
