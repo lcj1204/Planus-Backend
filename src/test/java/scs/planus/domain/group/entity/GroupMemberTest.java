@@ -103,7 +103,7 @@ class GroupMemberTest {
 
     @DisplayName("일정 권한 변경 테스트")
     @Nested
-    class changeTodoAuthority_Leader_Permission{
+    class changeTodoAuthority_TrueOrFalse{
         @DisplayName("일정 권한이 false 에서 true로 변경되어야 한다.")
         @Test
         void changeTodoAuthority_Success_FalseToTrue() {
