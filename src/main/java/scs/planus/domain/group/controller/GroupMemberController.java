@@ -15,14 +15,14 @@ import scs.planus.global.auth.entity.PrincipalDetails;
 import scs.planus.global.common.response.BaseResponse;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/app/groupMembers")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "GroupMember", description = "GroupMember API Document")
 public class GroupMemberController {
     private final GroupMemberService groupMemberService;
 
-    @PatchMapping("/groupMembers/groups/{groupId}/members/{memberId}")
+    @PatchMapping("/groups/{groupId}/members/{memberId}")
     @Operation(summary = "(리더용) 그룹 회원 일정 권한 변경 API")
     public BaseResponse<GroupMemberResponseDto> changeTodoAuthority(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                     @PathVariable("groupId") Long groupId,
