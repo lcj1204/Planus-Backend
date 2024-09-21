@@ -17,7 +17,7 @@ import static scs.planus.global.exception.CustomExceptionStatus.*;
 import static scs.planus.global.exception.CustomExceptionStatus.NOT_JOINED_GROUP;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class GroupMemberService {
