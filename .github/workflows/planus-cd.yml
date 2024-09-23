@@ -9,7 +9,7 @@ name: Planus CD
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "product" ]
 
 permissions:
   contents: read
