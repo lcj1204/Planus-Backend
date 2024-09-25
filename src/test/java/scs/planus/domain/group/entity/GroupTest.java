@@ -1,6 +1,7 @@
 package scs.planus.domain.group.entity;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import scs.planus.domain.Status;
 import scs.planus.domain.member.entity.Member;
@@ -160,24 +161,37 @@ class GroupTest {
         assertThat(group.getActiveGroupMembersSize()).isEqualTo(1);
     }
 
+    @Nested
     @DisplayName("Group의 상태가 변경되어야 한다.")
-    @Test
-    void changeScope() {
-        //given
-        Group group1 = Group.builder()
-                .scope(GroupScope.PUBLIC)
-                .build();
+    class changeScope {
+        @DisplayName("PUBLIC에서 PRIVATE으로 바껴야 한다.")
+        @Test
+        void changeScope_PUBLIC_To_PRIVATE() {
+            //given
+            Group group = Group.builder()
+                    .scope(GroupScope.PUBLIC)
+                    .build();
 
-        Group group2 = Group.builder()
-                .scope(GroupScope.PRIVATE)
-                .build();
+            //when
+            group.changeScope();
 
-        //when
-        group1.changeScope();
-        group2.changeScope();
+            //then
+            assertThat(group.getScope()).isEqualTo(GroupScope.PRIVATE);
+        }
 
-        //then
-        assertThat(group1.getScope()).isEqualTo(GroupScope.PRIVATE);
-        assertThat(group2.getScope()).isEqualTo(GroupScope.PUBLIC);
+        @DisplayName("PRIVATE에서 PUBLIC으로 바껴야 한다.")
+        @Test
+        void changeScope_PRIVATE_To_PUBLIC() {
+            //given
+            Group group = Group.builder()
+                    .scope(GroupScope.PRIVATE)
+                    .build();
+
+            //when
+            group.changeScope();
+
+            //then
+            assertThat(group.getScope()).isEqualTo(GroupScope.PUBLIC);
+        }
     }
 }
