@@ -70,6 +70,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
+        port: 22
         source: "./docker-compose.yml"
         target: ${{ secrets.COMPOSE_PATH }}
 
