@@ -72,7 +72,7 @@ jobs:
         password: ${{ secrets.PROD_PASSWORD }}
         port: 22
         source: "./docker-compose.yml"
-        target: ${{ secrets.COMPOSE_PATH }}
+        target: ${{ secrets.PROD_COMPOSE_PATH }}
 
     - name: EC2 deploy
       uses: appleboy/ssh-action@master
@@ -85,4 +85,3 @@ jobs:
             sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus
             docker-compose up -d
             docker image prune -f
-
