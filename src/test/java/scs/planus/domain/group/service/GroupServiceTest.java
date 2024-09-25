@@ -309,16 +309,31 @@ class GroupServiceTest extends ServiceTest {
                 .isEqualTo(NOT_GROUP_LEADER_PERMISSION);
     }
 
-    @DisplayName("leaderId와 groupId로 GroupScope을 변경할 수 있다. 최초 그룹 공개 범위는 PUBLIC 이다.")
-    @Test
-    void updateGroupScope() {
-        // PUBLIC 일 때
-        groupService.changeGroupScope(leader.getId(), group.getId());
-        assertThat(group.getScope()).isEqualTo(GroupScope.PRIVATE);
+    @Nested
+    @DisplayName("leaderId와 groupId로 GroupScope을 변경할 수 있다. 최초의 값은 PUBLIC이다.")
+    class changeGroupScope{
+        @DisplayName("PUBLIC에서 PRIVATE으로 바껴야 한다.")
+        @Test
+        void changeScope_PUBLIC_To_PRIVATE() {
+            // when
+            groupService.changeGroupScope(leader.getId(), group.getId());
 
-        // PRIVATE 일 떄
-        groupService.changeGroupScope(leader.getId(), group.getId());
-        assertThat(group.getScope()).isEqualTo(GroupScope.PUBLIC);
+            // then
+            assertThat(group.getScope()).isEqualTo(GroupScope.PRIVATE);
+        }
+
+        @DisplayName("PRIVATE에서 PUBLIC으로 바껴야 한다.")
+        @Test
+        void changeScope_PRIVATE_To_PUBLIC() {
+            // when
+            // PUBLIC -> PRIVATE
+            groupService.changeGroupScope(leader.getId(), group.getId());
+            // PRIVATE -> PUBLIC
+            groupService.changeGroupScope(leader.getId(), group.getId());
+
+            // then
+            assertThat(group.getScope()).isEqualTo(GroupScope.PUBLIC);
+        }
     }
 
     @DisplayName("Group을 삭제할 때, status가 Inactive로 변경되어야 한다.")
