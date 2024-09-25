@@ -72,7 +72,8 @@ jobs:
         password: ${{ secrets.PROD_PASSWORD }}
         port: 22
         source: "./docker-compose.yml"
-        target: ${{ secrets.PROD_COMPOSE_PATH }}
+        target: "/home/ubuntu/"
+        # target: ${{ secrets.PROD_COMPOSE_PATH }}
 
     - name: EC2 deploy
       uses: appleboy/ssh-action@master
