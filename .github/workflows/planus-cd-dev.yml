@@ -71,7 +71,7 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_PEM_KEY }}
           source: "./docker-compose/docker-compose.dev.yml"
-          target: "${{ secrets.COMPOSE_PATH }}/docker-compose.yml"
+          target: ${{ secrets.COMPOSE_PATH }}
 
       - name: EC2 deploy
         uses: appleboy/ssh-action@master
@@ -80,7 +80,8 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_PEM_KEY }}
           script: |
+            echo ls
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus_dev
-            docker-compose up -d
+            docker-compose -f docker-compose.dev.yml up -d
             docker image prune -f
