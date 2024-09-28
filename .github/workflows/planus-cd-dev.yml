@@ -71,7 +71,7 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           key: ${{ secrets.DEV_PEM_KEY }}
           source: "./docker-compose/docker-compose.dev.yml"
-          target: ${{ secrets.COMPOSE_PATH }}/docker-compose.yml
+          target: "${{ secrets.COMPOSE_PATH }}/docker-compose.yml"
 
       - name: EC2 deploy
         uses: appleboy/ssh-action@master
