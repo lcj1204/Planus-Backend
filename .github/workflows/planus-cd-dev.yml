@@ -83,5 +83,5 @@ jobs:
             echo ls
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus_dev
-            docker-compose -f docker-compose.dev.yml up -d
+            docker-compose -f docker-compose/docker-compose.dev.yml up -d
             docker image prune -f
