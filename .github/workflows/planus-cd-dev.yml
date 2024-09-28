@@ -61,7 +61,7 @@ jobs:
       - name: Dokcer 이미지 빌드
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{secrets.DOCKER_PASSWORD}}
-          docker build DockerFile/Dockerfile_dev -t ${{ secrets.DOCKER_USERNAME }}/planus_dev .
+          docker build -f DockerFile/Dockerfile_dev -t ${{ secrets.DOCKER_USERNAME }}/planus_dev .
           docker push ${{secrets.DOCKER_USERNAME}}/planus_dev
 
       - name: compose.yml 파일 전송
