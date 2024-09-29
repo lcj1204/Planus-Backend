@@ -85,3 +85,4 @@ jobs:
             sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus_dev
             docker-compose up -d
             docker image prune -f
+
