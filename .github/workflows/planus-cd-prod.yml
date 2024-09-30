@@ -72,17 +72,17 @@ jobs:
         # password: ${{ secrets.PROD_PASSWORD }}
         key: ${{ secrets.PROD_PEM_KEY }}
         source: "./docker-compose/docker-compose.prod.yml"
-        target: ${{ secrets.COMPOSE_PATH }}/docker-compose.yml
+        target: ${{ secrets.COMPOSE_PATH }}
 
     - name: EC2 deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{secrets.PROD_HOST}}
         username: ${{ secrets.PROD_USERNAME }}
-        # password: ${{ secrets.PROD_PASSWORD }}
         key: ${{ secrets.PROD_PEM_KEY }}
         script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus_prod
-            docker-compose up -d
-            docker image prune -f
+          cp ./docker-compose/docker-compose.prod.yml ./docker-compose.yml
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus_dev
+          docker-compose up -d
+          docker image prune -f
