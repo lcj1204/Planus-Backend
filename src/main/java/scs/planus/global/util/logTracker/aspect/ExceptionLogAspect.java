@@ -29,8 +29,8 @@ import static scs.planus.global.exception.CustomExceptionStatus.INTERNAL_SERVER_
 @Component
 @RequiredArgsConstructor
 public class ExceptionLogAspect {
-    private final ExceptionLogService exceptionLogService;
-    private final SlackAlarmGenerator slackAlarmGenerator;
+    // private final ExceptionLogService exceptionLogService;
+    // private final SlackAlarmGenerator slackAlarmGenerator;
     private final JwtProvider jwtProvider;
 
     @Pointcut("execution(* scs.planus..*(..))")
@@ -65,9 +65,9 @@ public class ExceptionLogAspect {
                     .message(e.getMessage())
                     .build();
 
-            ExceptionLog exceptionLog = exceptionLogService.save(exceptionLogDto);
+            // ExceptionLog exceptionLog = exceptionLogService.save(exceptionLogDto);
 
-            slackAlarmGenerator.sendExceptionLog(exceptionLog);
+            // slackAlarmGenerator.sendExceptionLog(exceptionLog);
 
             throw new PlanusException(INTERNAL_SERVER_ERROR);
         }
