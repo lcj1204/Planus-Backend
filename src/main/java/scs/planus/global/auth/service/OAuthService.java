@@ -40,11 +40,8 @@ public class OAuthService {
 
     public OAuthLoginResponseDto kakaoLogin(String code) {
         OAuthUserInfo kakaoMember = kakaoOAuthUserProvider.getUserInfo(code);
-        log.info("== kakaoOAuthUserProvider.getUserInfo(code) 패스 ==");
         Member member = saveOrGetExistedMember(kakaoMember);
-        log.info("== saveOrGetExistedMember(kakaoMember) 패스 ==");
         Token token = jwtProvider.generateToken(member.getEmail());
-        log.info("== jwtProvider.generateToken(member.getEmail()) 패스 ==");
         redisService.saveValue(member.getEmail(), token);
         log.info("== redisService.saveValue(member.getEmail(), token); 패스 ==");
 
