@@ -29,8 +29,8 @@ import static scs.planus.global.exception.CustomExceptionStatus.INTERNAL_SERVER_
 @Component
 @RequiredArgsConstructor
 public class ExceptionLogAspect {
-    // private final ExceptionLogService exceptionLogService;
-    // private final SlackAlarmGenerator slackAlarmGenerator;
+    private final ExceptionLogService exceptionLogService;
+    private final SlackAlarmGenerator slackAlarmGenerator;
     private final JwtProvider jwtProvider;
 
     @Pointcut("execution(* scs.planus..*(..))")
@@ -51,23 +51,29 @@ public class ExceptionLogAspect {
             throw e;
         }
         catch (RuntimeException e) { // PlanusException이 아닌 경우 동작
-            // HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-            // ExceptionLogDto exceptionLogDto = ExceptionLogDto.builder()
-            //         .requestURI(request.getRequestURI())
-            //         .httpMethod(request.getMethod())
-            //         .email(jwtProvider.getPayload(resolveToken(request)))
-            //         .parameter(getParameter(joinPoint))
-            //         .className(joinPoint.getTarget().getClass().getName())
-            //         .methodName(joinPoint.getSignature().getName())
-            //         .lineNumber(e.getStackTrace()[0].getLineNumber())
-            //         .exceptionType(e.getClass().getSimpleName())
-            //         .message(e.getMessage())
-            //         .build();
+            String token = resolveToken(request);
+            String email = "";
+            if (token != null) {
+                email = jwtProvider.getPayload(token);
+            }
+            
+            ExceptionLogDto exceptionLogDto = ExceptionLogDto.builder()
+                    .requestURI(request.getRequestURI())
+                    .httpMethod(request.getMethod())
+                    .email(jwtProvider.getPayload(resolveToken(request)))
+                    .parameter(getParameter(joinPoint))
+                    .className(joinPoint.getTarget().getClass().getName())
+                    .methodName(joinPoint.getSignature().getName())
+                    .lineNumber(e.getStackTrace()[0].getLineNumber())
+                    .exceptionType(e.getClass().getSimpleName())
+                    .message(e.getMessage())
+                    .build();
 
-            // ExceptionLog exceptionLog = exceptionLogService.save(exceptionLogDto);
+            ExceptionLog exceptionLog = exceptionLogService.save(exceptionLogDto);
 
-            // slackAlarmGenerator.sendExceptionLog(exceptionLog);
+            slackAlarmGenerator.sendExceptionLog(exceptionLog);
 
             throw new PlanusException(INTERNAL_SERVER_ERROR);
         }
