@@ -53,6 +53,12 @@ public class ExceptionLogAspect {
         catch (RuntimeException e) { // PlanusException이 아닌 경우 동작
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
+            String token = resolveToken(request);
+            String email = "";
+            if (token != null) {
+                email = jwtProvider.getPayload(token);
+            }
+            
             ExceptionLogDto exceptionLogDto = ExceptionLogDto.builder()
                     .requestURI(request.getRequestURI())
                     .httpMethod(request.getMethod())
@@ -69,6 +75,7 @@ public class ExceptionLogAspect {
 
             slackAlarmGenerator.sendExceptionLog(exceptionLog);
 
+            log.info("== ExceptionLogAspect 구간 ==");
             throw new PlanusException(INTERNAL_SERVER_ERROR);
         }
     }

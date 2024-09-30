@@ -5,7 +5,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Planus CD
+name: Planus Product Server CD
 
 on:
   push:
@@ -61,8 +61,8 @@ jobs:
     - name: Dokcer 이미지 빌드
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{secrets.DOCKER_PASSWORD}}
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/planus .
-        docker push ${{secrets.DOCKER_USERNAME}}/planus
+        docker build -f DockerFile/Dockerfile_prod -t ${{ secrets.DOCKER_USERNAME }}/planus_prod .
+        docker push ${{secrets.DOCKER_USERNAME}}/planus_prod
 
     - name: compose.yml 파일 전송
       uses: appleboy/scp-action@v0.1.7
@@ -71,7 +71,7 @@ jobs:
         username: ${{ secrets.PROD_USERNAME }}
         # password: ${{ secrets.PROD_PASSWORD }}
         key: ${{ secrets.PROD_PEM_KEY }}
-        source: "./docker-compose.yml"
+        source: "./docker-compose/docker-compose.prod.yml"
         target: ${{ secrets.COMPOSE_PATH }}
 
     - name: EC2 deploy
@@ -79,10 +79,10 @@ jobs:
       with:
         host: ${{secrets.PROD_HOST}}
         username: ${{ secrets.PROD_USERNAME }}
-        # password: ${{ secrets.PROD_PASSWORD }}
         key: ${{ secrets.PROD_PEM_KEY }}
         script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus
-            docker-compose up -d
-            docker image prune -f
+          cp ./docker-compose/docker-compose.prod.yml ./docker-compose.yml
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker pull ${{secrets.DOCKER_USERNAME}}/planus_dev
+          docker-compose up -d
+          docker image prune -f
