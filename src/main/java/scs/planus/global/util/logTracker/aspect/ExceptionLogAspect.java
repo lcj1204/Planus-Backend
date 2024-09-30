@@ -75,6 +75,7 @@ public class ExceptionLogAspect {
 
             slackAlarmGenerator.sendExceptionLog(exceptionLog);
 
+            log.info("== ExceptionLogAspect 구간 ==");
             throw new PlanusException(INTERNAL_SERVER_ERROR);
         }
     }
