@@ -51,19 +51,19 @@ public class ExceptionLogAspect {
             throw e;
         }
         catch (RuntimeException e) { // PlanusException이 아닌 경우 동작
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            // HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-            ExceptionLogDto exceptionLogDto = ExceptionLogDto.builder()
-                    .requestURI(request.getRequestURI())
-                    .httpMethod(request.getMethod())
-                    .email(jwtProvider.getPayload(resolveToken(request)))
-                    .parameter(getParameter(joinPoint))
-                    .className(joinPoint.getTarget().getClass().getName())
-                    .methodName(joinPoint.getSignature().getName())
-                    .lineNumber(e.getStackTrace()[0].getLineNumber())
-                    .exceptionType(e.getClass().getSimpleName())
-                    .message(e.getMessage())
-                    .build();
+            // ExceptionLogDto exceptionLogDto = ExceptionLogDto.builder()
+            //         .requestURI(request.getRequestURI())
+            //         .httpMethod(request.getMethod())
+            //         .email(jwtProvider.getPayload(resolveToken(request)))
+            //         .parameter(getParameter(joinPoint))
+            //         .className(joinPoint.getTarget().getClass().getName())
+            //         .methodName(joinPoint.getSignature().getName())
+            //         .lineNumber(e.getStackTrace()[0].getLineNumber())
+            //         .exceptionType(e.getClass().getSimpleName())
+            //         .message(e.getMessage())
+            //         .build();
 
             // ExceptionLog exceptionLog = exceptionLogService.save(exceptionLogDto);
 
