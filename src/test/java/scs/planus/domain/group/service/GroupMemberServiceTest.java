@@ -59,78 +59,70 @@ class GroupMemberServiceTest extends ServiceTest {
             member = memberRepository.findById(MEMBER_ID).orElseThrow();
         }
 
-        @DisplayName("리더 권한 테스트")
-        @Nested
-        class changeTodoAuthority_Leader_Permission{
+        @DisplayName("그룹의 리더는 [일정 권한 변경]을 요청할 수 있다.")
+        @Test
+        void changeTodoAuthority_Success_Leader_Permission() {
+            // member 의 todoAuthority default 값은 false 이다.
+            //when
+            GroupMemberResponseDto responseDto = groupMemberService.changeTodoAuthority(GROUP_ID, LEADER_ID, MEMBER_ID);
+            GroupMember groupMember = groupMemberRepository.findById(responseDto.getGroupMemberId()).get();
 
-            @DisplayName("그룹의 리더는 [일정 권한 변경]을 요청할 수 있다.")
-            @Test
-            void changeTodoAuthority_Success_Leader_Permission() {
-                // member 의 todoAuthority default 값은 false 이다.
-                //when
-                GroupMemberResponseDto responseDto = groupMemberService.changeTodoAuthority(GROUP_ID, LEADER_ID, MEMBER_ID);
-                GroupMember groupMember = groupMemberRepository.findById(responseDto.getGroupMemberId()).get();
-
-                //then
-                assertThat(responseDto.getGroupMemberId()).isEqualTo(MEMBER_ID);
-                assertThat(groupMember.isTodoAuthority()).isTrue();
-            }
-
-            @DisplayName("리더가 아닌 사람이 [일정 권한 변경]을 요청하면 예외가 발생한다.")
-            @Test
-            void changeTodoAuthority_Fail_Leader_Permission() {
-                //when & then
-                assertThatThrownBy(() -> groupMemberService.changeTodoAuthority(GROUP_ID, MEMBER_ID, MEMBER_ID))
-                        .isInstanceOf(PlanusException.class)
-                        .extracting("status")
-                        .isEqualTo(NOT_GROUP_LEADER_PERMISSION);
-            }
+            //then
+            assertThat(responseDto.getGroupMemberId()).isEqualTo(MEMBER_ID);
+            assertThat(groupMember.isTodoAuthority()).isTrue();
         }
 
-        @DisplayName("일정 권한 변경 테스트")
-        @Nested
-        class changeTodoAuthority_Change_TodoAuthority{
-
-            @DisplayName("일정 권한이 true에서 false로 변경되어야 한다.")
-            @Test
-            void changeTodoAuthority_Success_True_To_False() {
-                //given
-                Member trueMember = memberRepository.save(Member.builder().build());
-                GroupMember groupMember = groupMemberRepository.save(GroupMember.builder()
-                        .todoAuthority(true)
-                        .member(trueMember)
-                        .group(group)
-                        .build()
-                );
-
-                //when
-                GroupMemberResponseDto responseDto = groupMemberService.changeTodoAuthority(GROUP_ID, LEADER_ID, trueMember.getId());
-
-                //then
-                assertThat(responseDto.getGroupMemberId()).isEqualTo(groupMember.getId());
-                assertThat(groupMember.isTodoAuthority()).isFalse();
-            }
-
-            @DisplayName("일정 권한이 false에서 true로 변경되어야 한다.")
-            @Test
-            void changeTodoAuthority_Success_False_To_True() {
-                //given
-                Member falseMember = memberRepository.save(Member.builder().build());
-                GroupMember groupMember = groupMemberRepository.save(GroupMember.builder()
-                        .todoAuthority(false)
-                        .member(falseMember)
-                        .group(group)
-                        .build()
-                );
-
-                //when
-                GroupMemberResponseDto responseDto = groupMemberService.changeTodoAuthority(GROUP_ID, LEADER_ID, falseMember.getId());
-
-                //then
-                assertThat(responseDto.getGroupMemberId()).isEqualTo(groupMember.getId());
-                assertThat(groupMember.isTodoAuthority()).isTrue();
-            }
+        @DisplayName("리더가 아닌 사람이 [일정 권한 변경]을 요청하면 예외가 발생한다.")
+        @Test
+        void changeTodoAuthority_Fail_Leader_Permission() {
+            //when & then
+            assertThatThrownBy(() -> groupMemberService.changeTodoAuthority(GROUP_ID, MEMBER_ID, MEMBER_ID))
+                    .isInstanceOf(PlanusException.class)
+                    .extracting("status")
+                    .isEqualTo(NOT_GROUP_LEADER_PERMISSION);
         }
+
+
+        @DisplayName("일정 권한이 true에서 false로 변경되어야 한다.")
+        @Test
+        void changeTodoAuthority_Success_True_To_False() {
+            //given
+            Member trueMember = memberRepository.save(Member.builder().build());
+            GroupMember groupMember = groupMemberRepository.save(GroupMember.builder()
+                    .todoAuthority(true)
+                    .member(trueMember)
+                    .group(group)
+                    .build()
+            );
+
+            //when
+            GroupMemberResponseDto responseDto = groupMemberService.changeTodoAuthority(GROUP_ID, LEADER_ID, trueMember.getId());
+
+            //then
+            assertThat(responseDto.getGroupMemberId()).isEqualTo(groupMember.getId());
+            assertThat(groupMember.isTodoAuthority()).isFalse();
+        }
+
+        @DisplayName("일정 권한이 false에서 true로 변경되어야 한다.")
+        @Test
+        void changeTodoAuthority_Success_False_To_True() {
+            //given
+            Member falseMember = memberRepository.save(Member.builder().build());
+            GroupMember groupMember = groupMemberRepository.save(GroupMember.builder()
+                    .todoAuthority(false)
+                    .member(falseMember)
+                    .group(group)
+                    .build()
+            );
+
+            //when
+            GroupMemberResponseDto responseDto = groupMemberService.changeTodoAuthority(GROUP_ID, LEADER_ID, falseMember.getId());
+
+            //then
+            assertThat(responseDto.getGroupMemberId()).isEqualTo(groupMember.getId());
+            assertThat(groupMember.isTodoAuthority()).isTrue();
+        }
+
 
     }
 }
