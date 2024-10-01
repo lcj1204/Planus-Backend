@@ -9,7 +9,7 @@ name: Planus CI
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "develop", "product" ]
 
 permissions:
   contents: read

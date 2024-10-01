@@ -85,6 +85,14 @@ public class Group extends BaseTimeEntity {
         this.notice = notice;
     }
 
+    public void changeScope() {
+        if (scope == GroupScope.PUBLIC) {
+            this.scope = GroupScope.PRIVATE;
+        } else {
+            this.scope = GroupScope.PUBLIC;
+        }
+    }
+
     public void changeStatusToInactive() {
         this.status = Status.INACTIVE;
     }

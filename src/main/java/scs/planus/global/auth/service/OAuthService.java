@@ -43,6 +43,7 @@ public class OAuthService {
         Member member = saveOrGetExistedMember(kakaoMember);
         Token token = jwtProvider.generateToken(member.getEmail());
         redisService.saveValue(member.getEmail(), token);
+        log.info("== redisService.saveValue(member.getEmail(), token); 패스 ==");
 
         return OAuthLoginResponseDto.of(member, token);
     }
@@ -94,8 +95,7 @@ public class OAuthService {
                 .orElseGet(() -> {
                     String nickname = getNicknameFromFullName(fullName);
                     appleUserInfo.updateNickname(nickname);
-                    memberRepository.save(appleUserInfo.toMember());
-                    return null;
+                    return memberRepository.save(appleUserInfo.toMember());
                 });
     }
 

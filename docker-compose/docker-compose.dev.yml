@@ -2,11 +2,11 @@ version: '3'
 
 services:
   app:
-    image: sanggenie/planus
-    container_name: planus
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: sanggenie/planus_dev
+    container_name: planus_dev
+#    build:
+#      context: ./
+#      dockerfile: ./DockerFile/Dockerfile_dev
     restart: always
     ports:
       - 8080:8080
