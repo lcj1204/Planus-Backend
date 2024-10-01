@@ -95,8 +95,7 @@ public class OAuthService {
                 .orElseGet(() -> {
                     String nickname = getNicknameFromFullName(fullName);
                     appleUserInfo.updateNickname(nickname);
-                    memberRepository.save(appleUserInfo.toMember());
-                    return null;
+                    return memberRepository.save(appleUserInfo.toMember());
                 });
     }
 
