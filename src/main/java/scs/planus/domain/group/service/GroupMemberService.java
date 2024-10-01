@@ -33,19 +33,14 @@ public class GroupMemberService {
      * 일정 권한 변경 서비스
      */
     public GroupMemberResponseDto changeTodoAuthority(Long groupId, Long leaderId, Long memberId) {
+        groupRepository.findById(groupId)
+                .orElseThrow(() -> new PlanusException(NOT_EXIST_GROUP));
+
         GroupMember leaderGM = groupMemberRepository.findByMemberIdAndGroupId(leaderId, groupId)
-                .orElseThrow(() -> {
-                    groupRepository.findById(groupId)
-                            .orElseThrow(() -> new PlanusException(NOT_EXIST_GROUP));
-                    return new PlanusException(NOT_JOINED_GROUP);
-                });
+                .orElseThrow(() -> new PlanusException(NOT_JOINED_GROUP));
 
         GroupMember memberGM = groupMemberRepository.findByMemberIdAndGroupId(memberId, groupId)
-                .orElseThrow(() -> {
-                    groupRepository.findById(groupId)
-                            .orElseThrow(() -> new PlanusException(NOT_EXIST_GROUP));
-                    return new PlanusException(NOT_JOINED_GROUP);
-                });
+                .orElseThrow(() -> new PlanusException(NOT_JOINED_GROUP));
 
         validateLeaderPermission(leaderGM.getMember(), leaderGM.getGroup());
         memberGM.changeTodoAuthority();
