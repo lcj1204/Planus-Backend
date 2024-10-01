@@ -36,15 +36,15 @@ public class GroupMemberService {
         groupRepository.findById(groupId)
                 .orElseThrow(() -> new PlanusException(NOT_EXIST_GROUP));
 
-        GroupMember leaderGM = groupMemberRepository.findByMemberIdAndGroupId(leaderId, groupId)
+        GroupMember groupLeader = groupMemberRepository.findByMemberIdAndGroupId(leaderId, groupId)
                 .orElseThrow(() -> new PlanusException(NOT_JOINED_GROUP));
 
-        GroupMember memberGM = groupMemberRepository.findByMemberIdAndGroupId(memberId, groupId)
+        GroupMember groupMember = groupMemberRepository.findByMemberIdAndGroupId(memberId, groupId)
                 .orElseThrow(() -> new PlanusException(NOT_JOINED_GROUP));
 
-        validateLeaderPermission(leaderGM.getMember(), leaderGM.getGroup());
-        memberGM.changeTodoAuthority();
-        return GroupMemberResponseDto.of(memberGM);
+        validateLeaderPermission(groupLeader.getMember(), groupLeader.getGroup());
+        groupMember.changeTodoAuthority();
+        return GroupMemberResponseDto.of(groupMember);
     }
 
     private void validateLeaderPermission(Member member, Group group) {
