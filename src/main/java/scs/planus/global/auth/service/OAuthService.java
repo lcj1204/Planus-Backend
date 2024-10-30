@@ -40,6 +40,7 @@ public class OAuthService {
 
     public OAuthLoginResponseDto kakaoLogin(String code) {
         OAuthUserInfo kakaoMember = kakaoOAuthUserProvider.getUserInfo(code);
+        log.info("===카카오 post 성공 ===");
         Member member = saveOrGetExistedMember(kakaoMember);
         Token token = jwtProvider.generateToken(member.getEmail());
         redisService.saveValue(member.getEmail(), token);
