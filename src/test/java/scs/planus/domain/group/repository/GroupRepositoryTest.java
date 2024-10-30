@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import scs.planus.domain.Status;
 import scs.planus.domain.group.entity.Group;
 import scs.planus.domain.group.entity.GroupMember;
+import scs.planus.domain.group.entity.GroupScope;
 import scs.planus.support.RepositoryTest;
 
 import java.util.List;
@@ -30,7 +31,10 @@ class GroupRepositoryTest extends RepositoryTest {
         Pageable pageable = PageRequest.of(PAGE, PAGE_SIZE);
 
         for (int i = 0; i < COUNT; i++) {
-            Group group = Group.builder().status(Status.ACTIVE).build();
+            Group group = Group.builder()
+                    .scope(GroupScope.PUBLIC)
+                    .status(Status.ACTIVE)
+                    .build();
             groupRepository.save(group);
         }
 
@@ -52,6 +56,7 @@ class GroupRepositoryTest extends RepositoryTest {
         for (int i = 1; i <= COUNT; i++) {
             Group group = Group.builder()
                     .name("group" + i)
+                    .scope(GroupScope.PUBLIC)
                     .status(Status.ACTIVE)
                     .build();
             groupRepository.save(group);

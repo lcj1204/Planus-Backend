@@ -12,16 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import scs.planus.domain.Status;
 import scs.planus.domain.category.repository.TodoCategoryRepository;
-import scs.planus.domain.group.dto.GroupCreateRequestDto;
-import scs.planus.domain.group.dto.GroupDetailUpdateRequestDto;
-import scs.planus.domain.group.dto.GroupGetDetailResponseDto;
-import scs.planus.domain.group.dto.GroupGetMemberResponseDto;
-import scs.planus.domain.group.dto.GroupMemberResponseDto;
-import scs.planus.domain.group.dto.GroupNoticeUpdateRequestDto;
-import scs.planus.domain.group.dto.GroupResponseDto;
-import scs.planus.domain.group.dto.GroupsGetResponseDto;
+import scs.planus.domain.group.dto.*;
 import scs.planus.domain.group.entity.Group;
 import scs.planus.domain.group.entity.GroupMember;
+import scs.planus.domain.group.entity.GroupScope;
 import scs.planus.domain.group.entity.GroupTag;
 import scs.planus.domain.group.repository.GroupMemberQueryRepository;
 import scs.planus.domain.group.repository.GroupMemberRepository;
@@ -315,6 +309,33 @@ class GroupServiceTest extends ServiceTest {
                 .isEqualTo(NOT_GROUP_LEADER_PERMISSION);
     }
 
+    @Nested
+    @DisplayName("leaderId와 groupId로 GroupScope을 변경할 수 있다. 최초의 값은 PUBLIC이다.")
+    class changeGroupScope{
+        @DisplayName("PUBLIC에서 PRIVATE으로 바껴야 한다.")
+        @Test
+        void changeScope_PUBLIC_To_PRIVATE() {
+            // when
+            groupService.changeGroupScope(leader.getId(), group.getId());
+
+            // then
+            assertThat(group.getScope()).isEqualTo(GroupScope.PRIVATE);
+        }
+
+        @DisplayName("PRIVATE에서 PUBLIC으로 바껴야 한다.")
+        @Test
+        void changeScope_PRIVATE_To_PUBLIC() {
+            // when
+            // PUBLIC -> PRIVATE
+            groupService.changeGroupScope(leader.getId(), group.getId());
+            // PRIVATE -> PUBLIC
+            groupService.changeGroupScope(leader.getId(), group.getId());
+
+            // then
+            assertThat(group.getScope()).isEqualTo(GroupScope.PUBLIC);
+        }
+    }
+
     @DisplayName("Group을 삭제할 때, status가 Inactive로 변경되어야 한다.")
     @Test
     void softDeleteGroup() {
@@ -417,10 +438,7 @@ class GroupServiceTest extends ServiceTest {
             groupRepository.deleteAll();
 
             for (int i = 0; i < COUNT; i++) {
-                Group group = Group.builder()
-                        .name("group" + i)
-                        .status(Status.ACTIVE)
-                        .build();
+                Group group = Group.creatGroup("group" + i, "", 1, "");
                 GroupMember groupLeader = GroupMember.createGroupLeader(leader, group);
                 groupMemberRepository.save(groupLeader);
                 groupRepository.save(group);

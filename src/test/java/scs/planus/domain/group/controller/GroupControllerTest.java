@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -276,6 +277,27 @@ class GroupControllerTest extends ControllerTest {
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("groupId로 groupService.changeGroupScope()를 호출할 수 있다.")
+    @Test
+    void changeGroupScope() throws Exception {
+        //given
+        String path = "/app/groups/{groupId}/scope";
+        Long groupId = 1L;
+
+        given(groupService.changeGroupScope(anyLong(), anyLong()))
+                .willReturn(GroupResponseDto.builder().build());
+
+        //when
+        mockMvc
+                .perform(patch(path, groupId)
+                        .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //then
+        verify(groupService).changeGroupScope(anyLong(), eq(groupId));
     }
 
     @Nested
