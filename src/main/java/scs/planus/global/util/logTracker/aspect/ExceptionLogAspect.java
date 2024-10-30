@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
@@ -40,9 +39,9 @@ public class ExceptionLogAspect {
     @Pointcut("execution(* scs.planus.global.config..*(..))")
     private void config() {}
 
-    @Around("allPlanus()" +
-            "&& !logTracker()" +
-            "&& !config()")
+//    @Around("allPlanus()" +
+//            "&& !logTracker()" +
+//            "&& !config()")
     public Object sendLogMessage(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             return joinPoint.proceed();

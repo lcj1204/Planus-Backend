@@ -1,5 +1,6 @@
 package scs.planus.global.auth.service.kakao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import scs.planus.global.auth.dto.OAuthTokenResponseDto;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
+@Slf4j
 @Component
 public class KakaoAccessTokenClient {
 
@@ -50,6 +52,12 @@ public class KakaoAccessTokenClient {
         data.add("client_secret", kakaoClientSecret);
         data.add("redirect_uri", redirectUri);
         data.add("grant_type", "authorization_code");
+        log.info("======================================================");
+        log.info("code = {}", code);
+        log.info("kakaoClientId = {}", kakaoClientId);
+        log.info("kakaoClientSecret = {}", kakaoClientSecret);
+        log.info("redirectUri = {}", redirectUri);
+        log.info("======================================================");
         return data;
     }
 }
