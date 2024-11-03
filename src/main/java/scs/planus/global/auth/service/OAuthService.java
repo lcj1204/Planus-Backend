@@ -11,9 +11,9 @@ import scs.planus.global.auth.dto.OAuthLoginResponseDto;
 import scs.planus.global.auth.dto.apple.AppleAuthRequestDto;
 import scs.planus.global.auth.dto.apple.AppleClientSecretResponseDto;
 import scs.planus.global.auth.dto.apple.FullName;
+import scs.planus.global.auth.entity.Token;
 import scs.planus.global.auth.entity.userinfo.AppleUserInfo;
 import scs.planus.global.auth.entity.userinfo.OAuthUserInfo;
-import scs.planus.global.auth.entity.Token;
 import scs.planus.global.auth.service.apple.AppleJwtProvider;
 import scs.planus.global.auth.service.apple.AppleOAuthUserProvider;
 import scs.planus.global.auth.service.google.GoogleOAuthUserProvider;
@@ -21,8 +21,9 @@ import scs.planus.global.auth.service.kakao.KakaoOAuthUserProvider;
 import scs.planus.global.exception.PlanusException;
 import scs.planus.infra.redis.RedisService;
 
+import java.util.UUID;
+
 import static scs.planus.global.exception.CustomExceptionStatus.ALREADY_EXIST_SOCIAL_ACCOUNT;
-import static scs.planus.global.exception.CustomExceptionStatus.INVALID_USER_NAME;
 
 @Service
 @Transactional
@@ -60,8 +61,11 @@ public class OAuthService {
 
     public OAuthLoginResponseDto appleLogin(AppleAuthRequestDto appleAuthRequestDto) {
         OAuthUserInfo appleMember = appleOAuthUserProvider.getUserInfo(appleAuthRequestDto.getIdentityToken());
-        Member member = saveOrGetExistedAppleMember(appleMember, appleAuthRequestDto.getFullName());
+        Member member = saveOrGetExistedAppleMember(appleMember,
+                appleAuthRequestDto.getFullName() != null ? appleAuthRequestDto.getFullName() : null);
+        log.info("============3============");
         Token token = jwtProvider.generateToken(member.getEmail());
+        log.info("============4============");
         redisService.saveValue(member.getEmail(), token);
 
         return OAuthLoginResponseDto.of(member, token);
@@ -115,15 +119,20 @@ public class OAuthService {
 
     private Member getExistedAppleMember(Member findMember, FullName fullName) {
         if (findMember.getStatus().equals(Status.INACTIVE)) {
-            String nickname = getNicknameFromFullName(fullName);
-            findMember.init(nickname);
+            if (fullName != null){
+                String nickname = getNicknameFromFullName(fullName);
+                findMember.init(nickname);
+            } else{
+                findMember.init(findMember.getNickname());
+            }
         }
         return findMember;
     }
 
     private String getNicknameFromFullName(FullName fullName) {
         if (fullName == null) {
-            throw new PlanusException(INVALID_USER_NAME);
+            return "user#" + UUID.randomUUID();
+//            throw new PlanusException(INVALID_USER_NAME);
         }
         return fullName.getFamilyName() + fullName.getGivenName();
     }
