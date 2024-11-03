@@ -63,9 +63,7 @@ public class OAuthService {
         OAuthUserInfo appleMember = appleOAuthUserProvider.getUserInfo(appleAuthRequestDto.getIdentityToken());
         Member member = saveOrGetExistedAppleMember(appleMember,
                 appleAuthRequestDto.getFullName() != null ? appleAuthRequestDto.getFullName() : null);
-        log.info("============3============");
         Token token = jwtProvider.generateToken(member.getEmail());
-        log.info("============4============");
         redisService.saveValue(member.getEmail(), token);
 
         return OAuthLoginResponseDto.of(member, token);
