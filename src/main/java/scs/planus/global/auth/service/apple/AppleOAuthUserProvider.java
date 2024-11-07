@@ -2,6 +2,7 @@ package scs.planus.global.auth.service.apple;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import scs.planus.global.auth.entity.userinfo.AppleUserInfo;
 import scs.planus.global.auth.entity.userinfo.OAuthUserInfo;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import static scs.planus.global.exception.CustomExceptionStatus.INVALID_APPLE_IDENTITY_TOKEN;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AppleOAuthUserProvider {
@@ -29,7 +31,8 @@ public class AppleOAuthUserProvider {
         ApplePublicKeys applePublicKey = appleAuthClient.getApplePublicKey();
 
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers, applePublicKey);
-
+        log.info("identityToken = [{}]", identityToken);
+        log.info("publicKey = [{}]", publicKey);
         Claims claims = appleJwtParser.parseClaimWithPublicKey(identityToken, publicKey);
 
         validateClaims(claims);
@@ -40,6 +43,7 @@ public class AppleOAuthUserProvider {
 
     private void validateClaims(Claims claims) {
         if (!appleClaimsValidator.isValid(claims)) {
+            log.info("AppleOAuthUserProvider");
             throw new PlanusException(INVALID_APPLE_IDENTITY_TOKEN);
         }
     }
